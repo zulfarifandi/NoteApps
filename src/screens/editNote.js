@@ -1,11 +1,19 @@
-import React, { useState } from 'react'
-import { View, StyleSheet, Text } from 'react-native'
-import CustomButton from '../components/customButton'
-import CustomTextInput from '../components/customTextInput'
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Text, Alert } from 'react-native';
+import Toast from 'react-native-toast-message';
+import CustomButton from '../components/customButton';
+import CustomTextInput from '../components/customTextInput';
 
 const EditNote = ({ note, setCurrentPage, editNote }) => {
-  const [title, setTitle] = useState(note ? note.title : '')
-  const [desc, setDesc] = useState(note ? note.desc : '')
+  const [title, setTitle] = useState(note ? note.title : '');
+  const [desc, setDesc] = useState(note ? note.desc : '');
+
+  useEffect(() => {
+    if (note) {
+      setTitle(note.title);
+      setDesc(note.desc);
+    }
+  }, [note]);
 
   return (
     <View style={styles.container}>
@@ -33,8 +41,18 @@ const EditNote = ({ note, setCurrentPage, editNote }) => {
           text="Simpan"
           width="100%"
           onPress={() => {
-            editNote(note.id, title, desc)
-            setCurrentPage('home')
+            if (title === '') {
+              Alert.alert('Error', 'Judul tidak boleh kosong');
+            } else {
+              editNote(note.id, title, desc);
+              setCurrentPage('home');
+              Toast.show({
+                type: 'success',
+                text1: 'Success',
+                text2: 'Note berhasil diubah',
+                visibilityTime: 2000,
+              });
+            }
           }}
         />
       </View>
@@ -48,7 +66,7 @@ const EditNote = ({ note, setCurrentPage, editNote }) => {
         />
       </View>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -68,6 +86,6 @@ const styles = StyleSheet.create({
   spacerTop: {
     marginTop: 30,
   },
-})
+});
 
-export default EditNote
+export default EditNote;

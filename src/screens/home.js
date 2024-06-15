@@ -1,8 +1,9 @@
-import React from 'react'
-import { FlatList, StyleSheet, View, Text } from 'react-native'
-import CustomButton from '../components/customButton'
+import React from 'react';
+import { FlatList, StyleSheet, View, Text, Alert } from 'react-native';
+import Toast from 'react-native-toast-message';
+import CustomButton from '../components/customButton';
 
-const NoteCard = ({ item, setCurrentPage, deleteNote, setSelectedNote }) => (
+const NoteCard = ({ item, setCurrentPage, deleteNote, setCurrentNote }) => (
   <View style={styles.card}>
     <Text style={styles.cardTitle}>{item.title}</Text>
     <Text>{item.desc}</Text>
@@ -14,8 +15,8 @@ const NoteCard = ({ item, setCurrentPage, deleteNote, setSelectedNote }) => (
         fontSize={12}
         width={100}
         onPress={() => {
-          setSelectedNote(item)
-          setCurrentPage('edit')
+          setCurrentNote(item); // Set current note
+          setCurrentPage('edit');
         }}
       />
       <CustomButton
@@ -24,31 +25,53 @@ const NoteCard = ({ item, setCurrentPage, deleteNote, setSelectedNote }) => (
         text="Hapus"
         fontSize={12}
         width={100}
-        onPress={() => deleteNote(item.id)}
+        onPress={() => {
+          Alert.alert(
+            "Konfirmasi",
+            "Apakah Anda yakin ingin menghapus note ini?",
+            [
+              { text: "Batal" },
+              {
+                text: "Ya",
+                onPress: () => {
+                  deleteNote(item.id);
+                  Toast.show({
+                    type: 'success',
+                    text1: 'Success',
+                    text2: 'Note berhasil dihapus',
+                    visibilityTime: 2000,
+                  });
+                }
+              }
+            ]
+          );
+        }}
       />
     </View>
   </View>
-)
+);
 
-const Home = ({ noteList, setCurrentPage, deleteNote, setSelectedNote }) => (
+const Home = ({ noteList, setCurrentPage, deleteNote, setCurrentNote }) => (
   <View style={styles.container}>
     <CustomButton
       backgroundColor="#DDD"
       color="#203239"
       text="Tambahkan Note"
       width="100%"
-      onPress={() => setCurrentPage('add')}
+      onPress={() => {
+        setCurrentPage('add');
+      }}
     />
     <FlatList
       showsVerticalScrollIndicator={false}
       data={noteList}
       renderItem={({ item }) => (
-        <NoteCard item={item} setCurrentPage={setCurrentPage} deleteNote={deleteNote} setSelectedNote={setSelectedNote} />
+        <NoteCard item={item} setCurrentPage={setCurrentPage} deleteNote={deleteNote} setCurrentNote={setCurrentNote} />
       )}
       keyExtractor={(item) => item.id.toString()}
     />
   </View>
-)
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -76,6 +99,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
   },
-})
+});
 
-export default Home
+export default Home;

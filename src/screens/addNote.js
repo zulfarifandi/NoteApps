@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { View, StyleSheet, Text } from 'react-native'
+import { View, StyleSheet, Text, Alert } from 'react-native'
+import Toast from 'react-native-toast-message'
 import CustomButton from '../components/customButton'
 import CustomTextInput from '../components/customTextInput'
 
@@ -33,8 +34,18 @@ const AddNote = ({ setCurrentPage, addNote }) => {
           text="Simpan"
           width="100%"
           onPress={() => {
-            addNote(title, desc)
-            setCurrentPage('home')
+            if (title === '' ) {
+              Alert.alert('Error', 'Judul tidak boleh kosong')
+            } else {
+              addNote(title, desc)
+              setCurrentPage('home')
+              Toast.show({
+                type: 'success',
+                text1: 'Success',
+                text2: 'Note berhasil ditambahkan',
+                visibilityTime: 200,
+              })
+            }
           }}
         />
       </View>
