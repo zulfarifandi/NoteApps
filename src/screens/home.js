@@ -62,14 +62,18 @@ const Home = ({ noteList, setCurrentPage, deleteNote, setCurrentNote }) => (
         setCurrentPage('add');
       }}
     />
-    <FlatList
-      showsVerticalScrollIndicator={false}
-      data={noteList}
-      renderItem={({ item }) => (
-        <NoteCard item={item} setCurrentPage={setCurrentPage} deleteNote={deleteNote} setCurrentNote={setCurrentNote} />
-      )}
-      keyExtractor={(item) => item.id.toString()}
-    />
+    {noteList.length === 0 ? (
+  <Text style={styles.noDataText}>No data, please create note</Text>
+) : (
+  <FlatList
+    showsVerticalScrollIndicator={false}
+    data={noteList}
+    renderItem={({ item }) => (
+      <NoteCard item={item} setCurrentPage={setCurrentPage} deleteNote={deleteNote} setCurrentNote={setCurrentNote} />
+    )}
+    keyExtractor={(item) => item.id.toString()}
+  />
+)}
   </View>
 );
 
@@ -78,6 +82,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
+    alignItems: 'center',
     padding: 20,
   },
   card: {
@@ -98,6 +103,13 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-evenly',
+  },
+  noDataText: {
+    fontSize: 18,
+    color: '#333', // Warna teks yang kontras
+    textAlign: 'center',
+    marginTop: 20,
+    alignSelf: 'center',
   },
 });
 
